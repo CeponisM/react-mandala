@@ -22,7 +22,7 @@ function App() {
   const [isBlendModeActive, setIsBlendModeActive] = useState(false);
   const [lineHue, setLineHue] = useState(0);
   const [animateHue, setAnimateHue] = useState(false);
-  const [initialSeparation, setInitialSeparation] = useState(3); // 50 pixels initial separation
+  const [initialSeparation, setInitialSeparation] = useState(50); // 50 pixels initial separation
   const [activePreset, setActivePreset] = useState(0);
   const [isMenuVisible, setIsMenuVisible] = useState(true);
 
@@ -146,6 +146,16 @@ function App() {
       }
     },
   ];
+
+    const applyRandomPreset = () => {
+      setMode(['pi', '3pi', 'pigr', 'custom'][Math.floor(Math.random() * 4)]);
+      setSpeed(Math.random() * 9638);
+      setColorMode(Math.random() * 5);
+      setBackgroundBrightness(Math.random() * 100);
+      setDistance(Math.random() * 30000);
+      setPivotDistance(Math.random() * 50000);
+      setRotationSpeed((Math.random() - 0.5) * 2);
+  };
 
   const appStyle = {
     backgroundColor: `hsl(${backgroundColor}, 100%, ${backgroundBrightness}%)`,
@@ -511,6 +521,7 @@ function App() {
                 Preset {preset.id}
               </button>
             ))}
+            <button onClick={applyRandomPreset}>Randomize Settings</button>
           </div>
           <div className='top-menu-option-list'>
             <label>
@@ -542,6 +553,7 @@ function App() {
 
       {/* Canvas Component */}
       <Canvas
+        gl={{ powerPreference: "high-performance", antialias: true }}
         mode={mode}
         running={running}
         speed={speed}

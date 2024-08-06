@@ -291,7 +291,6 @@ const Canvas = ({ mode, running, speed, colormode, colorChangeMode, distance, pi
             this.pathColors.push(this.hue);
         }
 
-
         display() {
             this.p.colorMode(this.p.HSB, 360, 100, 100);
 
