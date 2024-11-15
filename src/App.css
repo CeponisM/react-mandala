@@ -1,242 +1,355 @@
-body, html {
+/* Modern App Styling */
+.App {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* This prevents scrollbars */
-}
-
-.App {
-  text-align: center;
-  max-width: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  height: 100vh;
+  width: 100vw;
   overflow: hidden;
+  position: relative;
+  transition: background-color 0.3s ease;
 }
 
-canvas {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-select, button {
-  margin: 10px;
-  padding: 8px 15px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  background-color: #fff;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-button:hover, select:hover {
-  background-color: #eaeaea;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-/* Responsive canvas container */
-div[ref] {
-  width: 100%;
-  height: 80%;
-}
-
-/* Responsive layout adjustments */
-@media (max-width: 600px) {
-  /* Styles for smaller screens */
-}
-
-.App button {
-  margin: 5px;
-  padding: 8px 15px;
-  /* Add more styling as needed */
-}
-
-/* Dropdown menu styling */
-.dropdown-menu {
-  display: none;
-  margin-top: 10px;
-  background-color: #f1f1f1;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-/* Responsive styling */
-@media (max-width: 600px) {
-  .App button {
-    width: 100%;
-    /* Adjust button styles for mobile */
-  }
-
-  .dropdown-menu {
-    width: 100%;
-    /* Adjust dropdown styles for mobile */
-  }
-}
-
-/* Animation for dropdown */
-.dropdown-menu-anim {
-  transition: max-height 0.5s ease-out;
-  overflow: hidden;
-  max-height: 0;
-}
-
-.dropdown-menu-anim.open {
-  max-height: 500px; /* Adjust based on content size */
-}
-
-.canvas {
-  display: block;
-}
-
-.p5Canvas {
-  height: fit-content;
-  overflow: hidden;
-}
-
-.button-menu {
+/* Menu Wrapper */
+.menu-wrapper {
   position: fixed;
-  display: flex;
-  flex-direction: column;
-  width: fit-content;
-  background-color: lightgray;
-  align-items: left;
-  z-index: 2;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  font-size: 14px;
 }
 
-.menu-option-container {
-  background-color: darkgray;
-  border-top: 3px solid darkgray;
-  border-bottom: 3px solid gray;
-  padding: 6px 6px;
+/* Toggle Button */
+.toggle-button-container {
+  margin-bottom: 10px;
 }
 
-.menu-options-content {
-  display: flex;
-  flex-direction: column;
-}
-
-input[type="text"] {
-  padding: 8px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  transition: all 0.3s ease-in-out;
-}
-
-input[type="text"]:focus {
-  border-color: #007bff;
-}
-
-@media (max-width: 600px) {
-  input[type="text"] {
-    width: calc(100% - 20px);
-  }
-}
-
-/* Extend dropdown-menu styles */
-.dropdown-menu input[type="text"] {
-  margin-top: 10px;
-  padding: 8px;
-  width: calc(100% - 16px); /* Account for padding */
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  transition: opacity 0.5s ease-in-out;
-}
-
-/* Add responsive styling for the input */
-@media (max-width: 600px) {
-  .dropdown-menu input[type="text"] {
-    width: calc(100% - 32px); /* Adjust for smaller screens */
-  }
-}
-
-.menu-option-list {
-  align-items: left;
-  text-align: left;
-  width: 100%;
-}
-
-.menu-option-list .range {
-  width: 100%;
-}
-
-.presets-container button {
-  margin: 5px;
-  padding: 10px;
-  max-width: 65px;
-  border: none;
-  background-color: #4CAF50;
+.toggle-button-container button {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  padding: 8px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-.presets-container button:hover {
-  background-color: #45a049;
-  transform: scale(1.1);
+.toggle-button-container button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-@media (max-width: 600px) {
-  .presets-container button {
-    padding: 8px;
-    font-size: 14px;
-  }
-}
-
-.button-menu .tabButton {
-  margin-left: 1px;
-  overflow: hidden;
-}
-
+/* Main Menu Container */
 .button-menu {
-  transition: transform 0.5s ease;
+  background: rgba(30, 30, 30, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 320px;
+  min-width: 280px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateX(0);
-  overflow: hidden;
-  padding-top: 26px;
-  padding-right: 3px;
-  /* Other styles for your button menu */
+  opacity: 1;
 }
 
 .button-menu.minimized {
-  transform: translateX(-100%); /* Adjust as needed */
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
-.header-tab {
-  transition: transform 0.5s ease;
-  /* Additional styling for the header tab */
+/* Custom Scrollbar */
+.button-menu::-webkit-scrollbar {
+  width: 6px;
 }
 
-.header-tab button {
-  /* Style your toggle button */
+.button-menu::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
 }
 
-@media (max-width: 768px) {
-  .button-menu {
-    /* Adjustments for smaller screens */
-  }
-
-  .button-menu.minimized {
-    /* Adjustments for minimized menu on smaller screens */
-  }
+.button-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
 }
 
-.header-tab {
-  transition: transform 0.5s ease;
-  /* Other styles */
+.button-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
-.button-menu.minimized .header-tab {
-  transform: translateX(-100%); /* Example animation */
+/* Presets Container */
+.presets-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 8px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.menu-wrapper {
+.presets-container button {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+  border: none;
+  color: white;
+  padding: 12px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 11px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  text-align: center;
+}
+
+.presets-container button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 1), rgba(139, 92, 246, 1));
+}
+
+.presets-container button[style*="darkgreen"] {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.8), rgba(22, 163, 74, 0.8)) !important;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3) !important;
+}
+
+/* Tab Buttons */
+.tabButton {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 14px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
   position: relative;
+  overflow: hidden;
 }
 
-.toggle-button-container {
-  position: fixed; /* or 'absolute' based on layout */
-  top: 12px; /* Center vertically */
-  left: 0; /* Align to the left edge */
-  transform: translateY(-50%);
-  z-index: 1001; /* Ensure it's above other elements */
+.tabButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.tabButton:hover::before {
+  left: 100%;
+}
+
+.tabButton:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Menu Options Content */
+.menu-options-content {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(10px);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Form Elements */
+select, input[type="text"] {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+select:focus, input[type="text"]:focus {
+  outline: none;
+  border-color: rgba(99, 102, 241, 0.8);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+select option {
+  background: #1a1a1a;
+  color: white;
+}
+
+/* Range Sliders */
+input[type="range"] {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  outline: none;
+  margin: 8px 0 12px 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Menu Option Lists */
+.menu-option-list {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.menu-option-list label {
+  display: flex;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+/* Checkboxes */
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-left: 8px;
+  accent-color: #6366f1;
+  cursor: pointer;
+}
+
+/* Action Buttons */
+button:not(.tabButton):not(.toggle-button-container button):not(.presets-container button) {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.8), rgba(22, 163, 74, 0.8));
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+button:not(.tabButton):not(.toggle-button-container button):not(.presets-container button):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 1), rgba(22, 163, 74, 1));
+}
+
+/* Top Menu Options */
+.top-menu-option-list {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.top-menu-option-list label {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .menu-wrapper {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+  }
+  
+  .button-menu {
+    max-width: calc(100vw - 40px);
+    min-width: auto;
+    padding: 16px;
+  }
+  
+  .presets-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .presets-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .menu-wrapper {
+    font-size: 12px;
+  }
+}
+
+/* Canvas Container */
+.content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
 }
