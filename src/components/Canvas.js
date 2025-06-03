@@ -1,8 +1,9 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useImperativeHandle, forwardRef } from 'react';
 import p5 from 'p5';
+import { evaluate } from 'mathjs';
 import './Canvas.css';
 
-const Canvas = ({ mode, running, speed, colormode, colorChangeMode, distance, pivotDistance, customEquation, isRotating, rotationSpeed, isBlendModeActive, lineHue, animateHue, initialSeparation }) => {
+const Canvas = forwardRef(({ mode, running, speed, colormode, colorChangeMode, distance, pivotDistance, customEquation, isRotating, rotationSpeed, isBlendModeActive, lineHue, animateHue, initialSeparation }, ref) => {
     const canvasRef = useRef();
     let p5Instance;
     let circles = [];
@@ -32,47 +33,70 @@ const Canvas = ({ mode, running, speed, colormode, colorChangeMode, distance, pi
         },
     };
 
-    const parseCustomEquation = (equationString) => {
-        const safeString = equationString
-          .replace(/x/g, '*x')
-          .replace(/y/g, '*y')
-          .replace(/pi/g, '*Math.PI')
-          .replace(/\^/g, '**'); // Replace '^' with '**' for exponentiation
-      
-          try {
-            return safeString;
-          } catch (error) {
+    const parseCustomEquation = (equationString, x, y) => {
+        try {
+            const scope = { x, y, pi: Math.PI };
+            return evaluate(equationString, scope);
+        } catch (error) {
             console.error("Error in custom equation:", error);
-            return 0; // Default value in case of an error
-          }
+            return 0;
+        }
     };
-    
+
     const calculateBounceAngle = (equationResult) => {
         // If equationResult is a valid angle in radians, you can directly return it
         // return equationResult;
-    
+
         // If equationResult needs to be transformed into an angle
         // Here's a simple example: mapping the result to a range between 0 and 2*PI
-        // This is a placeholder example, modify the logic as needed for your application
-    
+        // This is a placeholder example, modify the logic as needed for the application
+
         const normalizedResult = (equationResult % (2 * Math.PI));
         console.log('normalllllllllllllllllllllllllllll: ', equationResult)
         return normalizedResult;
     };
 
     // Handle the custom equation
-    const applyCustomEquation = () => {
+    const applyCustomEquation = (x, y) => {
         try {
-          return calculateBounceAngle(parseCustomEquation(customEquation));
+            return calculateBounceAngle(parseCustomEquation(customEquation, x, y));
         } catch (error) {
-          console.error("Error in custom equation:", error);
-          return 0;
+            console.error("Error in custom equation:", error);
+            return 0;
         }
     };
 
     let lastTouchDistance = null;
     const zoomRef = useRef(1);
-    let zoom = 1;
+    const offsetRef = useRef({ x: 0, y: 0 });
+    const isDragging = useRef(false);
+    const lastMousePos = useRef({ x: 0, y: 0 });
+
+    // Expose resetOffset function via ref
+    useImperativeHandle(ref, () => ({
+        resetOffset: () => {
+            offsetRef.current = { x: 0, y: 0 };
+        },
+    }));
+
+    const handleMouseDown = (event) => {
+        isDragging.current = true;
+        lastMousePos.current = { x: event.clientX, y: event.clientY };
+    };
+
+    const handleMouseMove = (event) => {
+        if (isDragging.current) {
+            const dx = event.clientX - lastMousePos.current.x;
+            const dy = event.clientY - lastMousePos.current.y;
+            offsetRef.current.x += dx / zoomRef.current;
+            offsetRef.current.y += dy / zoomRef.current;
+            lastMousePos.current = { x: event.clientX, y: event.clientY };
+        }
+    };
+
+    const handleMouseUp = () => {
+        isDragging.current = false;
+    };
 
     const handleTouchMove = (event) => {
         if (event.touches.length === 2) {
@@ -90,7 +114,28 @@ const Canvas = ({ mode, running, speed, colormode, colorChangeMode, distance, pi
             }
 
             lastTouchDistance = distance;
+        } else if (event.touches.length === 1 && isDragging.current) {
+            event.preventDefault();
+            const touch = event.touches[0];
+            const dx = touch.pageX - lastMousePos.current.x;
+            const dy = touch.pageY - lastMousePos.current.y;
+            offsetRef.current.x += dx / zoomRef.current;
+            offsetRef.current.y += dy / zoomRef.current;
+            lastMousePos.current = { x: touch.pageX, y: touch.pageY };
         }
+    };
+
+    const handleTouchStart = (event) => {
+        if (event.touches.length === 1) {
+            isDragging.current = true;
+            const touch = event.touches[0];
+            lastMousePos.current = { x: touch.pageX, y: touch.pageY };
+        }
+    };
+
+    const handleTouchEnd = () => {
+        isDragging.current = false;
+        lastTouchDistance = null;
     };
 
     const applyZoom = (zoomFactor) => {
@@ -108,41 +153,50 @@ const Canvas = ({ mode, running, speed, colormode, colorChangeMode, distance, pi
         const contentElement = document.getElementById('content');
         if (contentElement) {
             contentElement.addEventListener('touchmove', handleTouchMove, { passive: false });
+            contentElement.addEventListener('touchstart', handleTouchStart);
+            contentElement.addEventListener('touchend', handleTouchEnd);
+            contentElement.addEventListener('mousedown', handleMouseDown);
+            contentElement.addEventListener('mousemove', handleMouseMove);
+            contentElement.addEventListener('mouseup', handleMouseUp);
+            contentElement.addEventListener('mouseleave', handleMouseUp);
 
             // Cleanup function
             return () => {
                 contentElement.removeEventListener('touchmove', handleTouchMove);
+                contentElement.removeEventListener('touchstart', handleTouchStart);
+                contentElement.removeEventListener('touchend', handleTouchEnd);
+                contentElement.removeEventListener('mousedown', handleMouseDown);
+                contentElement.removeEventListener('mousemove', handleMouseMove);
+                contentElement.removeEventListener('mouseup', handleMouseUp);
+                contentElement.removeEventListener('mouseleave', handleMouseUp);
             };
         }
     }, []);
-
-    let offsetX = 0;
-    let offsetY = 0;
-    let lastX, lastY;
+    
     let currentHue = lineHue;
 
     const Sketch = (p) => {
         let bounceAngle = modes[mode] || Math.PI;
         let movementStarted = false;
         let startTime;
-      
+
         p.setup = () => {
-          p.createCanvas(p.windowWidth, p.windowHeight);
-          p.angleMode(p.RADIANS);
-          initializeCircles();
-          startTime = p.millis();
+            p.createCanvas(p.windowWidth, p.windowHeight);
+            p.angleMode(p.RADIANS);
+            initializeCircles();
+            startTime = p.millis();
         };
-      
+
         function initializeCircles() {
-          maxDistance = 0;
-          circles = [];
-          let separation = initialSeparation / 2; // Half separation for each circle
-          let velocity = p.createVector(speed, 0);
-      
-          // Set initial positions based on separation
-          circles.push(new Circle(p, p.createVector(-separation, 0), velocity, bounceAngle));
-          velocity = p.createVector(-speed, 0);
-          circles.push(new Circle(p, p.createVector(separation, 0), velocity, bounceAngle));
+            maxDistance = 0;
+            circles = [];
+            let separation = initialSeparation / 2; // Half separation for each circle
+            let velocity = p.createVector(speed, 0);
+
+            // Set initial positions based on separation
+            circles.push(new Circle(p, p.createVector(-separation, 0), velocity, bounceAngle));
+            velocity = p.createVector(-speed, 0);
+            circles.push(new Circle(p, p.createVector(separation, 0), velocity, bounceAngle));
         }
 
         p.mouseWheel = (event) => {
@@ -153,9 +207,9 @@ const Canvas = ({ mode, running, speed, colormode, colorChangeMode, distance, pi
         p.draw = () => {
             if (runningRef.current && !movementStarted) {
                 if (p.millis() - startTime > startDelay) {
-                  movementStarted = true;
+                    movementStarted = true;
                 }
-              }
+            }
             if (runningRef.current && movementStarted) {
                 p.clear();
                 p.background(255, 0);
@@ -165,7 +219,7 @@ const Canvas = ({ mode, running, speed, colormode, colorChangeMode, distance, pi
                 }
 
                 let scaleFactor = Math.min(p.width, p.height) / (2 * maxDistance + 100); // 100 is the margin
-                p.translate(p.width / 2, p.height / 2);
+                p.translate(p.width / 2 + offsetRef.current.x, p.height / 2 + offsetRef.current.y);
                 p.rotate(rotationAngle);
                 p.scale(zoomRef.current);
                 p.scale(scaleFactor);
@@ -242,19 +296,19 @@ const Canvas = ({ mode, running, speed, colormode, colorChangeMode, distance, pi
             // Check if the circle has reached the dynamic distance from the center
             if (this.p.dist(0, 0, this.position.x, this.position.y) >= distance) {
 
-                if (mode === 'custom') {
-                    this.bounceAngle = applyCustomEquation(this.position.x, this.position.y);
-                }
-
-                // Use the calculated angle to rotate the velocity
-                if (mode === "mandelbrot") {
-                    // Calculate the bounce angle based on the mode
-                    let angle = modes[mode](this.position.x, this.position.y);
-                    this.velocity.rotate(angle);
-                } else {
-                    this.velocity.rotate(this.bounceAngle);
-                    this.velocity.x *= -1;
-                    this.velocity.y *= -1;
+                if (this.p.dist(0, 0, this.position.x, this.position.y) >= distance) {
+                    if (mode === 'custom') {
+                        this.bounceAngle = applyCustomEquation(this.position.x, this.position.y);
+                        this.velocity.rotate(this.bounceAngle);
+                    } else if (mode === "mandelbrot") {
+                        // Calculate the bounce angle based on the mode
+                        let angle = modes[mode](this.position.x, this.position.y);
+                        this.velocity.rotate(angle);
+                    } else {
+                        this.velocity.rotate(this.bounceAngle);
+                        this.velocity.x *= -1;
+                        this.velocity.y *= -1;
+                    }
                 }
 
             }
@@ -303,6 +357,6 @@ const Canvas = ({ mode, running, speed, colormode, colorChangeMode, distance, pi
     }
 
     return <div style={canvasStyle} id='content' className='content' ref={canvasRef}></div>;
-};
+});
 
 export default Canvas;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Canvas from './components/Canvas';
 
@@ -25,6 +25,7 @@ function App() {
   const [initialSeparation, setInitialSeparation] = useState(50); // 50 pixels initial separation
   const [activePreset, setActivePreset] = useState(0);
   const [isMenuVisible, setIsMenuVisible] = useState(true);
+  const canvasRef = useRef();
 
   const presets = [
     {
@@ -145,16 +146,39 @@ function App() {
         initialSeparation: 3
       }
     },
+    {
+      id: 6, settings: {
+        mode: 'custom',
+        speed: 3471.6,
+        colorMode: 0.03,
+        backgroundBrightness: 17,
+        backgroundInvert: false,
+        colorChangeMode: 'dynamic',
+        distance: 640,
+        pivotDistance: 88,
+        customEquation: '(phi^sqrt(e))/pi',
+        isCustomMode: true,
+        animateBackground: true,
+        backgroundColor: 170,
+        backgroundColorSpeed: 189,
+        isRotating: true,
+        rotationSpeed: -0.2518,
+        isBlendModeActive: true,
+        lineHue: 0,
+        animateHue: false,
+        initialSeparation: 3
+      }
+    },
   ];
 
-    const applyRandomPreset = () => {
-      setMode(['pi', '3pi', 'pigr', 'custom'][Math.floor(Math.random() * 4)]);
-      setSpeed(Math.random() * 9638);
-      setColorMode(Math.random() * 5);
-      setBackgroundBrightness(Math.random() * 100);
-      setDistance(Math.random() * 30000);
-      setPivotDistance(Math.random() * 50000);
-      setRotationSpeed((Math.random() - 0.5) * 2);
+  const applyRandomPreset = () => {
+    setMode(['pi', '3pi', 'pigr', 'custom'][Math.floor(Math.random() * 4)]);
+    setSpeed(Math.random() * 9638);
+    setColorMode(Math.random() * 5);
+    setBackgroundBrightness(Math.random() * 100);
+    setDistance(Math.random() * 30000);
+    setPivotDistance(Math.random() * 50000);
+    setRotationSpeed((Math.random() - 0.5) * 2);
   };
 
   const appStyle = {
@@ -522,6 +546,7 @@ function App() {
               </button>
             ))}
             <button onClick={applyRandomPreset}>Randomize Settings</button>
+            <button onClick={() => canvasRef.current.resetOffset()}>Center Canvas</button>
           </div>
           <div className='top-menu-option-list'>
             <label>
@@ -553,6 +578,7 @@ function App() {
 
       {/* Canvas Component */}
       <Canvas
+        ref={canvasRef}
         gl={{ powerPreference: "high-performance", antialias: true }}
         mode={mode}
         running={running}

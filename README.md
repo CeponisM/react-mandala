@@ -1,70 +1,149 @@
-# Getting Started with Create React App
+# React Mandala
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A dynamic, interactive visualization project that creates mesmerizing, mathematically-inspired patterns through circular motion and customizable equations.
 
-## Available Scripts
+![React Mandala Demo](https://mceponis.com/5/) ![p5.js](https://img.shields.io/badge/p5.js-1.8.0-red) ![License](https://img.shields.io/badge/license-MIT-green)
 
-In the project directory, you can run:
+## Overview
 
-### `npm start`
+React Mandala combines the power of React and p5.js to generate beautiful, mathematically-inspired patterns based on circular motion, mathematical constants (like π and the golden ratio), and customizable equations. Users can manipulate various parameters to create unique visual effects resembling mandalas or spirograph-like patterns.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The project features a responsive canvas with interactive controls, preset configurations, zoom functionality, and touch support for mobile devices, allowing users to explore mathematical beauty through dynamic animations and color variations.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## ✨ Features
 
-### `npm test`
+- **Interactive Canvas**: Animated patterns rendered with p5.js using two circles moving based on user-defined parameters
+- **Mathematical Modes**: Predefined equations (π, golden ratio, Mandelbrot-inspired) and custom user-defined equations
+- **Customizable Settings**:
+  - Motion parameters: speed, distance, pivot distance, initial separation
+  - Animation controls: start/stop, rotation, rotation speed
+  - Color options: dynamic or fixed color modes, hue animation, blend mode (difference)
+  - Background customization: color, brightness, animation, and inversion
+- **Presets**: Five predefined configurations for quick pattern exploration
+- **Randomization**: Generate random settings for unique visual outputs
+- **Touch Support**: Pinch-to-zoom functionality for mobile devices
+- **Responsive Design**: Adapts to different screen sizes with automatic canvas resizing
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🚀 Installation
 
-### `npm run build`
+### Prerequisites
+- [Node.js](https://nodejs.org/) (version 14 or higher)
+- npm or yarn package manager
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Setup
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/ceponism/react-mandala.git
+   cd react-mandala
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
 
-### `npm run eject`
+3. **Start the Development Server**:
+   ```bash
+   npm start
+   ```
+   The app will open at `http://localhost:3000/` in your browser.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+4. **Build for Production**:
+   ```bash
+   npm run build
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🎮 Usage
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Getting Started
+1. Open the app in your browser
+2. You'll see a canvas displaying animated patterns with a control menu on the left
+3. Use the `<</>>` button to show/hide the control menu
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Control Menu Options
 
-## Learn More
+- **Presets**: Select from five preset configurations or randomize settings
+- **Equation Menu**: Choose predefined modes (π, golden ratio, Mandelbrot) or enter custom equations
+- **Animation Menu**: Start/stop animation and adjust rotation speed
+- **Line Color Menu**: Toggle dynamic/fixed colors, adjust hue, enable blend modes
+- **Background Color Menu**: Customize background color, brightness, and animation
+- **Invert Background**: Toggle color inversion for different visual effects
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Interactivity
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **Mouse Wheel**: Zoom in/out on the canvas
+- **Touch Gestures**: Pinch to zoom on mobile devices
+- **Custom Equations**: Enter equations using `x`, `y`, `pi`, and standard operators (e.g., `pi * x + y`)
 
-### Code Splitting
+## 🛠️ Dependencies
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **React** (^18.2.0): User interface framework for building the interactive control menu and managing state.
+- **p5** (^1.8.0): JavaScript library for rendering the interactive canvas and animating mandala-like patterns.
+- **mathjs** (^13.2.0): Math library for parsing and evaluating custom mathematical equations, enabling complex expressions like `sin` and `cos` in custom mode.
+- **react-scripts** (5.0.1): Development and build tools for running and bundling the React application.
 
-### Analyzing the Bundle Size
+## ⚙️ How It Works
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### App.js
+- Manages application state (mode, speed, color settings)
+- Renders control menu and Canvas component
+- Includes preset configurations and random pattern generation
+- Handles background color animation with useEffect
 
-### Making a Progressive Web App
+### Canvas.js
+- Uses p5.js to render animated patterns
+- Two circles move based on user parameters with paths drawn on canvas
+- Supports mathematical modes and custom equation parsing
+- Handles zoom via mouse wheel and touch gestures
+- Manages color changes and canvas scaling
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Custom Equations
+Users can input custom equations using the format:
+- `x`, `y` for variables
+- `pi` for π constant
+- Standard operators (`+`, `-`, `*`, `/`, `^`)
+- Example: `pi * x + y`
 
-### Advanced Configuration
+## ⚠️ Limitations
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- **Custom Equation Parsing**: Limited parsing capabilities; use simple expressions
+- **Performance**: High speeds or large distances may impact performance on low-end devices
+- **Mandelbrot Mode**: Simplified implementation, not a full Mandelbrot set
+- **Touch Support**: Only pinch-to-zoom is supported (no panning)
 
-### Deployment
+## 🔮 Future Improvements
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- [x] Enhance equation parsing with safer math library (e.g., mathjs)
+- [x] Add panning support for touch and mouse interactions
+- [ ] Implement more complex mathematical modes and fractal patterns
+- [ ] Optimize performance for high-speed animations
+- [ ] Add export functionality for saving patterns as images/videos
 
-### `npm run build` fails to minify
+## 🤝 Contributing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Make your changes and commit (`git commit -m "Add your feature"`)
+4. Push to the branch (`git push origin feature/your-feature`)
+5. Open a pull request
+
+Please ensure your code follows the project's ESLint configuration and includes relevant tests.
+
+## 📄 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Built with [React](https://reactjs.org/) and [p5.js](https://p5js.org/)
+- Inspired by mathematical art and spirograph-like visualizations
+- Thanks to the open-source community for the amazing tools and libraries
+
+---
+
+**Explore, experiment, and create stunning visual patterns with React Mandala!** 
+
+For questions or feedback, please [open an issue](https://github.com/your-username/react-mandala/issues) on GitHub.
