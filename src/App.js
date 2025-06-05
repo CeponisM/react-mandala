@@ -25,6 +25,7 @@ function App() {
   const [initialSeparation, setInitialSeparation] = useState(50); // 50 pixels initial separation
   const [activePreset, setActivePreset] = useState(0);
   const [isMenuVisible, setIsMenuVisible] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const canvasRef = useRef();
 
   const presets = [
@@ -159,8 +160,8 @@ function App() {
         customEquation: '(phi^sqrt(e))/pi',
         isCustomMode: true,
         animateBackground: true,
-        backgroundColor: 170,
-        backgroundColorSpeed: 189,
+        backgroundColor: 99,
+        backgroundColorSpeed: 5,
         isRotating: true,
         rotationSpeed: -0.2518,
         isBlendModeActive: true,
@@ -233,19 +234,13 @@ function App() {
   }
 
   useEffect(() => {
-    let intervalId;
-
+    let interval;
     if (animateBackground) {
-      intervalId = setInterval(() => {
-        setBackgroundColor((prevColor) => (prevColor + (backgroundColorSpeed / 10000)) % 360);
-      }, 3); // Adjust the interval and color change rate for smoothness
+      interval = setInterval(() => {
+        setBackgroundColor((prevColor) => (prevColor + 1) % 360);
+      }, Math.max(50, 1000 / backgroundColorSpeed)); // Minimum 50ms interval
     }
-
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
+    return () => clearInterval(interval);
   }, [animateBackground, backgroundColorSpeed]);
 
   function closeAllMenu() {
@@ -254,6 +249,48 @@ function App() {
     setShowLineColorMenu(false);
     setShowBackgroundColorMenu(false);
   }
+
+  const toggleFullscreen = () => {
+    if (!isFullscreen) {
+      // Enter fullscreen
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) { // Safari
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) { // IE/Edge
+        elem.msRequestFullscreen();
+      }
+      setIsFullscreen(true);
+    } else {
+      // Exit fullscreen
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) { // Safari
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) { // IE/Edge
+        document.msExitFullscreen();
+      }
+      setIsFullscreen(false);
+    }
+  };
+
+  // Update fullscreen state when the fullscreenchange event fires
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement || !!document.webkitFullscreenElement || !!document.msFullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
+  }, []);
 
   function renderEquationMenu() {
     return (
@@ -527,6 +564,11 @@ function App() {
 
   return (
     <div className="App" style={appStyle}>
+      <div className='toggle-button-container2'>
+        <button onClick={toggleFullscreen}>
+          {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+        </button>
+      </div>
       <div className='menu-wrapper'>
         <div className='toggle-button-container'>
           <button onClick={toggleMenu}>

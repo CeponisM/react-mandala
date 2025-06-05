@@ -146,4 +146,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 **Explore, experiment, and create stunning visual patterns with React Mandala!** 
 
-For questions or feedback, please [open an issue](https://github.com/your-username/react-mandala/issues) on GitHub.
+For questions or feedback, please [open an issue](https://github.com/ceponism/react-mandala/issues) on GitHub.

@@ -8,6 +8,10 @@
   overflow: hidden;
   position: relative;
   transition: background-color 0.3s ease;
+  will-change: top, width;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  contain: layout paint;  
 }
 
 /* Menu Wrapper */
@@ -20,6 +24,37 @@
 }
 
 /* Toggle Button */
+.toggle-button-container2 {
+  right: 20px;
+  top: 20px;
+  position: absolute;
+  display: flex;
+  width: fit-content;
+}
+
+.toggle-button-container2 button {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8)) !important; 
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  text-shadow: 1px 2px rgba(0, 0, 0, 0.7);
+  z-index: 3;
+}
+
+.toggle-button-container2 button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  font-size: 15px;
+}
+
 .toggle-button-container {
   margin-bottom: 10px;
 }
@@ -36,6 +71,7 @@
   font-size: 12px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  text-shadow: 1px 2px rgb(0, 0, 0);
 }
 
 .toggle-button-container button:hover {
@@ -84,6 +120,10 @@
 
 .button-menu::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+.fullscreen-button {
+  position: absolute;
 }
 
 /* Presets Container */
@@ -352,4 +392,8 @@ button:not(.tabButton):not(.toggle-button-container button):not(.presets-contain
   width: 100%;
   height: 100%;
   z-index: 1;
+  will-change: top, width;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  contain: layout paint;
 }

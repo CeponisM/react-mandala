@@ -17,6 +17,9 @@ const Canvas = forwardRef(({ mode, running, speed, colormode, colorChangeMode, d
     const canvasStyle = {
         mixBlendMode: isBlendModeActive ? 'difference' : 'normal',
         zIndex: 1,
+        willChange: 'transform',
+        backfaceVisibility: 'hidden',
+        transform: 'translateZ(0)'
     };
 
     const modes = {
@@ -172,13 +175,17 @@ const Canvas = forwardRef(({ mode, running, speed, colormode, colorChangeMode, d
             };
         }
     }, []);
-    
+
     let currentHue = lineHue;
 
     const Sketch = (p) => {
         let bounceAngle = modes[mode] || Math.PI;
         let movementStarted = false;
         let startTime;
+        let cachedScaleFactor = 1;
+        let lastMaxDistance = 0;
+        let lastWidth = 0;
+        let lastHeight = 0;
 
         p.setup = () => {
             p.createCanvas(p.windowWidth, p.windowHeight);
@@ -218,11 +225,16 @@ const Canvas = forwardRef(({ mode, running, speed, colormode, colorChangeMode, d
                     rotationAngle += rotationSpeedRef.current;
                 }
 
-                let scaleFactor = Math.min(p.width, p.height) / (2 * maxDistance + 100); // 100 is the margin
+                if (maxDistance !== lastMaxDistance || p.width !== lastWidth || p.height !== lastHeight) {
+                    cachedScaleFactor = Math.min(p.width, p.height) / (2 * maxDistance + 100);
+                    lastMaxDistance = maxDistance;
+                    lastWidth = p.width;
+                    lastHeight = p.height;
+                }
                 p.translate(p.width / 2 + offsetRef.current.x, p.height / 2 + offsetRef.current.y);
                 p.rotate(rotationAngle);
                 p.scale(zoomRef.current);
-                p.scale(scaleFactor);
+                p.scale(cachedScaleFactor);
 
                 if (animateHue) {
                     currentHue = (currentHue + 1) % 360; // Increment hue for animation
@@ -239,7 +251,6 @@ const Canvas = forwardRef(({ mode, running, speed, colormode, colorChangeMode, d
 
         p.windowResized = () => {
             p.resizeCanvas(p.windowWidth, p.windowHeight);
-            initializeCircles();
         };
     };
 
@@ -359,4 +370,4 @@ const Canvas = forwardRef(({ mode, running, speed, colormode, colorChangeMode, d
     return <div style={canvasStyle} id='content' className='content' ref={canvasRef}></div>;
 });
 
-export default Canvas;
+export default React.memo(Canvas);
